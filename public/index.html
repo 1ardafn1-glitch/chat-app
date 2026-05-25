@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Chat</h2>
+
+<input id="msg">
+<button onclick="send()">Gönder</button>
+
+<div id="chat"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const socket = io();
+
+function send(){
+    const msg = document.getElementById("msg").value;
+    socket.emit("message", msg);
+    document.getElementById("msg").value="";
+}
+
+socket.on("message",(msg)=>{
+    document.getElementById("chat").innerHTML += "<p>"+msg+"</p>";
+});
+</script>
+
+</body>
+</html>
