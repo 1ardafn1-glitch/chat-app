@@ -1,5 +1,3 @@
-// server.js
-
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
@@ -10,107 +8,120 @@ const io = new Server(server);
 
 app.use(express.static("public"));
 
-const rooms = {};
+const users = {};   // socket.id -> user
+const rooms = {};   // room -> {password}
+
+function getRoomUsers(room){
+    let list = [];
+    for(let id in users){
+        if(users[id].room === room){
+            list.push(users[id].username);
+        }
+    }
+    return list;
+}
 
 io.on("connection", (socket) => {
 
+    // 👤 LOGIN
+    socket.on("login", (username) => {
+
+        users[socket.id] = {
+            username,
+            room: null
+        };
+
+        socket.emit("loggedIn", username);
+    });
+
     // 🌍 GLOBAL
-    socket.on("joinGlobal", (name) => {
+    socket.on("joinGlobal", () => {
+
+        const user = users[socket.id];
+        if(!user) return;
 
         socket.join("global");
-
-        socket.name = name;
-        socket.room = "global";
+        user.room = "global";
 
         io.to("global").emit("system", {
-            room: "global",
-            text: `${name} global sohbete katıldı`
+            text: `${user.username} globale girdi`
         });
+
+        io.to("global").emit("onlineUsers", getRoomUsers("global"));
     });
 
     // ➕ ODA OLUŞTUR
-    socket.on("createRoom", ({ name, room, password }) => {
+    socket.on("createRoom", ({ room, password }) => {
 
-        if (rooms[room]) {
+        if(rooms[room]){
             socket.emit("errorMessage", "Oda zaten var!");
             return;
         }
 
-        rooms[room] = {
-            password
-        };
-
-        socket.join(room);
-
-        socket.name = name;
-        socket.room = room;
+        rooms[room] = { password };
 
         socket.emit("roomCreated", room);
-
-        io.to(room).emit("system", {
-            room,
-            text: `${name} odayı oluşturdu`
-        });
     });
 
-    // 🚪 ODAYA KATIL
-    socket.on("joinRoom", ({ name, room, password }) => {
+    // 🚪 ODAYA GİR
+    socket.on("joinRoom", ({ room, password }) => {
 
-        if (!rooms[room]) {
-            socket.emit("errorMessage", "Oda bulunamadı!");
+        const user = users[socket.id];
+        if(!user) return;
+
+        if(!rooms[room]){
+            socket.emit("errorMessage", "Oda yok!");
             return;
         }
 
-        if (rooms[room].password !== password) {
+        if(rooms[room].password !== password){
             socket.emit("errorMessage", "Şifre yanlış!");
             return;
         }
 
         socket.join(room);
-
-        socket.name = name;
-        socket.room = room;
+        user.room = room;
 
         io.to(room).emit("system", {
-            room,
-            text: `${name} odaya katıldı`
+            text: `${user.username} odaya girdi`
         });
+
+        io.to(room).emit("onlineUsers", getRoomUsers(room));
     });
 
     // 💬 MESAJ
     socket.on("message", (msg) => {
 
-        if (!socket.room) return;
+        const user = users[socket.id];
+        if(!user || !user.room) return;
 
-        io.to(socket.room).emit("message", {
-            name: socket.name,
+        io.to(user.room).emit("message", {
+            name: user.username,
             msg
         });
     });
 
-    // ✍️ YAZIYOR
+    // ✍️ typing
     socket.on("typing", () => {
 
-        if (!socket.room) return;
+        const user = users[socket.id];
+        if(!user || !user.room) return;
 
-        socket.to(socket.room)
-            .emit("typing", socket.name);
+        socket.to(user.room).emit("typing", user.username);
     });
 
-    // 🎤 VOICE SIGNAL
+    // 🎤 voice signal
     socket.on("signal", (data) => {
 
-        if (!socket.room) return;
+        const user = users[socket.id];
+        if(!user || user.room === "global") return;
 
-        // sadece odalarda voice
-        if (socket.room === "global") return;
-
-        socket.to(socket.room).emit("signal", {
-            name: socket.name,
-            data
-        });
+        socket.to(user.room).emit("signal", data);
     });
 
+    socket.on("disconnect", () => {
+        delete users[socket.id];
+    });
 });
 
 const PORT = process.env.PORT || 3000;
