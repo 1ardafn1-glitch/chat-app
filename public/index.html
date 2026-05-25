@@ -1,5 +1,3 @@
-<!-- public/index.html -->
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -8,184 +6,93 @@
 
 <style>
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
 body{
-    background:#313338;
+    margin:0;
     font-family:Arial;
-    overflow:hidden;
+    background:#313338;
+    color:white;
 }
 
-/* APP */
 #app{
     display:flex;
-    width:100vw;
     height:100vh;
 }
 
-/* SOL SERVER BAR */
-#servers{
-    width:72px;
-    background:#1e1f22;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    padding-top:10px;
-}
-
-.serverIcon{
-    width:50px;
-    height:50px;
-    background:#5865f2;
-    border-radius:50%;
-    margin-bottom:10px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    color:white;
-    font-size:22px;
-}
-
-/* KANAL */
-#channels{
-    width:260px;
+/* LEFT */
+#left{
+    width:240px;
     background:#2b2d31;
-    color:white;
-    padding:15px;
+    padding:10px;
 }
 
-#channels h2{
-    margin-bottom:20px;
-}
-
-.menuBtn{
-    width:100%;
-    padding:12px;
-    margin-top:10px;
-    border:none;
-    border-radius:8px;
-    background:#404249;
-    color:white;
-    text-align:left;
-    cursor:pointer;
-}
-
-.menuBtn:hover{
-    background:#4e5058;
-}
-
-input{
+button, input{
     width:100%;
     padding:10px;
     margin-top:10px;
     border:none;
     border-radius:8px;
-    background:#1e1f22;
+}
+
+button{
+    background:#5865f2;
     color:white;
+    cursor:pointer;
 }
 
 /* CHAT */
-#chatArea{
+#chat{
     flex:1;
     display:flex;
     flex-direction:column;
-    background:#313338;
 }
 
-#topbar{
+#top{
     height:50px;
-    background:#313338;
-    border-bottom:1px solid #1e1f22;
+    background:#1e1f22;
     display:flex;
     align-items:center;
     padding-left:20px;
-    color:white;
-    font-weight:bold;
 }
 
-#chat{
+#messages{
     flex:1;
     overflow-y:auto;
-    padding:20px;
+    padding:10px;
 }
 
 .msg{
-    color:white;
-    margin-bottom:15px;
-}
-
-.msg b{
-    color:#5865f2;
+    margin:5px 0;
 }
 
 .system{
     color:gray;
-    font-size:14px;
-    margin-bottom:10px;
-}
-
-/* TYPING */
-#typing{
-    color:gray;
     font-size:12px;
-    padding-left:20px;
-    padding-bottom:5px;
 }
 
-/* INPUT */
 #inputBox{
     display:flex;
-    padding:20px;
+    padding:10px;
 }
 
 #msg{
     flex:1;
-    background:#383a40;
+    background:#40444b;
+    color:white;
 }
 
-#sendBtn,
-#voiceBtn{
-    width:55px;
+#ptt{
+    width:80px;
     margin-left:10px;
-    border:none;
-    border-radius:10px;
-    background:#5865f2;
-    color:white;
-    cursor:pointer;
+    background:red;
 }
 
-/* LOGIN */
-#loginScreen{
+#online{
     position:absolute;
-    width:100%;
-    height:100%;
-    background:#1e1f22;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
-
-#loginBox{
-    width:350px;
-    background:#313338;
-    padding:30px;
-    border-radius:15px;
-    color:white;
-}
-
-.bigBtn{
-    width:100%;
-    padding:14px;
-    margin-top:10px;
-    border:none;
-    border-radius:10px;
-    background:#5865f2;
-    color:white;
-    cursor:pointer;
+    right:10px;
+    top:60px;
+    background:#2b2d31;
+    padding:10px;
+    width:150px;
 }
 
 </style>
@@ -193,101 +100,51 @@ input{
 
 <body>
 
-<div id="loginScreen">
-
-<div id="loginBox">
-
-<h2>Discord Clone 🔥</h2>
-
-<input id="name" placeholder="İsim">
-
-<div id="mainMenu">
-
-<button class="bigBtn" onclick="joinGlobal()">
-🌍 Global Sohbet
-</button>
-
-<button class="bigBtn" onclick="showRoomMenu()">
-🔒 Odalı Sohbet
-</button>
-
+<!-- LOGIN -->
+<div id="login">
+    <input id="user" placeholder="Kullanıcı adı">
+    <button onclick="login()">Giriş</button>
 </div>
 
-<div id="roomMenu" style="display:none;">
+<div id="app" style="display:none;">
 
-<input id="roomName" placeholder="Oda Adı">
+<!-- LEFT -->
+<div id="left">
 
-<input id="roomPass" placeholder="Şifre">
+<h3>Menu</h3>
 
-<button class="bigBtn" onclick="createRoom()">
-➕ Oda Kur
-</button>
+<button onclick="joinGlobal()">🌍 Global</button>
 
-<button class="bigBtn" onclick="joinRoom()">
-🚪 Odaya Katıl
-</button>
+<input id="room" placeholder="oda">
+<input id="pass" placeholder="şifre">
 
-</div>
-
-</div>
-
-</div>
-
-<!-- APP -->
-<div id="app">
-
-<!-- SERVER BAR -->
-<div id="servers">
-
-<div class="serverIcon">💬</div>
-
-</div>
-
-<!-- CHANNELS -->
-<div id="channels">
-
-<h2>CHAT</h2>
-
-<button class="menuBtn">
-# genel
-</button>
-
-<button class="menuBtn">
-🔊 voice
-</button>
+<button onclick="createRoom()">➕ Oda Kur</button>
+<button onclick="joinRoom()">🚪 Oda Gir</button>
 
 </div>
 
 <!-- CHAT -->
-<div id="chatArea">
+<div id="chat">
 
-<div id="topbar">
-# sohbet
-</div>
+<div id="top">Chat</div>
 
-<div id="chat"></div>
-
-<div id="typing"></div>
+<div id="messages"></div>
 
 <div id="inputBox">
 
-<input id="msg" placeholder="Mesaj yaz...">
+<input id="msg" placeholder="mesaj">
 
-<button id="sendBtn" onclick="send()">
-➤
-</button>
+<button onclick="send()">➤</button>
 
-<button id="voiceBtn"
-onclick="startVoice()"
-style="display:none;">
-🎤
-</button>
+<button id="ptt">🎤</button>
 
 </div>
 
 </div>
 
 </div>
+
+<div id="online"></div>
 
 <script src="/socket.io/socket.io.js"></script>
 
@@ -299,151 +156,87 @@ let user = "";
 let peer;
 let stream;
 
+// 👤 LOGIN
+function login(){
+
+    user = document.getElementById("user").value;
+
+    socket.emit("login", user);
+
+    document.getElementById("login").style.display="none";
+    document.getElementById("app").style.display="flex";
+}
+
 // 🌍 GLOBAL
 function joinGlobal(){
-
-    user = document.getElementById("name").value;
-
-    if(user.trim()==""){
-        alert("İsim gerekli");
-        return;
-    }
-
-    socket.emit("joinGlobal", user);
-
-    document.getElementById("loginScreen")
-    .style.display="none";
+    socket.emit("joinGlobal");
 }
 
-// 🔒 ROOM MENU
-function showRoomMenu(){
-
-    document.getElementById("mainMenu")
-    .style.display="none";
-
-    document.getElementById("roomMenu")
-    .style.display="block";
-}
-
-// ➕ CREATE ROOM
+// ➕ ROOM
 function createRoom(){
 
-    user = document.getElementById("name").value;
-
-    const room =
-    document.getElementById("roomName").value;
-
-    const pass =
-    document.getElementById("roomPass").value;
-
     socket.emit("createRoom",{
-        name:user,
-        room,
-        password:pass
+        room:document.getElementById("room").value,
+        password:document.getElementById("pass").value
     });
 
-    document.getElementById("loginScreen")
-    .style.display="none";
-
-    document.getElementById("voiceBtn")
-    .style.display="block";
+    alert("Oda oluşturuldu");
 }
 
 // 🚪 JOIN ROOM
 function joinRoom(){
 
-    user = document.getElementById("name").value;
-
-    const room =
-    document.getElementById("roomName").value;
-
-    const pass =
-    document.getElementById("roomPass").value;
-
     socket.emit("joinRoom",{
-        name:user,
-        room,
-        password:pass
+        room:document.getElementById("room").value,
+        password:document.getElementById("pass").value
     });
-
-    document.getElementById("loginScreen")
-    .style.display="none";
-
-    document.getElementById("voiceBtn")
-    .style.display="block";
 }
 
 // 💬 SEND
 function send(){
 
-    const input =
-    document.getElementById("msg");
+    const m = document.getElementById("msg");
 
-    if(input.value.trim()=="") return;
+    if(m.value.trim()=="") return;
 
-    socket.emit("message", input.value);
+    socket.emit("message", m.value);
 
-    input.value="";
+    m.value="";
 }
 
-// ⌨️ ENTER
+// ✍️ typing
 document.getElementById("msg")
-.addEventListener("keypress",(e)=>{
+.addEventListener("input",()=>socket.emit("typing"));
 
-    if(e.key==="Enter"){
-        send();
-    }
-});
+// 💬 message
+socket.on("message",(d)=>{
 
-// ✍️ TYPING
-document.getElementById("msg")
-.addEventListener("input",()=>{
-
-    socket.emit("typing");
-});
-
-// 💬 MESSAGE
-socket.on("message",(data)=>{
-
-    const div =
-    document.createElement("div");
+    const div=document.createElement("div");
 
     div.className="msg";
 
-    div.innerHTML=
-    `<b>${data.name}</b>: ${data.msg}`;
+    div.innerHTML=`<b>${d.name}</b>: ${d.msg}`;
 
-    document.getElementById("chat")
-    .appendChild(div);
-
-    document.getElementById("chat")
-    .scrollTop=999999;
+    document.getElementById("messages").appendChild(div);
 });
 
-// ℹ️ SYSTEM
+// system
 socket.on("system",(d)=>{
 
-    const div =
-    document.createElement("div");
+    const div=document.createElement("div");
 
     div.className="system";
 
     div.innerText=d.text;
 
-    document.getElementById("chat")
-    .appendChild(div);
+    document.getElementById("messages").appendChild(div);
 });
 
-// ✍️ typing
-socket.on("typing",(name)=>{
+// online users
+socket.on("onlineUsers",(list)=>{
 
-    document.getElementById("typing")
-    .innerText=name+" yazıyor...";
-
-    setTimeout(()=>{
-        document.getElementById("typing")
-        .innerText="";
-    },1000);
+    document.getElementById("online").innerHTML =
+    "<b>Online</b><br>" + list.join("<br>");
 });
 
 // ❌ error
@@ -451,127 +244,85 @@ socket.on("errorMessage",(m)=>{
     alert(m);
 });
 
-// 🎤 VOICE CHAT
+// 🎤 PUSH TO TALK
+const btn = document.getElementById("ptt");
+
+btn.addEventListener("mousedown", startVoice);
+btn.addEventListener("mouseup", stopVoice);
+
 async function startVoice(){
 
-    stream =
-    await navigator.mediaDevices
-    .getUserMedia({audio:true});
+    stream = await navigator.mediaDevices.getUserMedia({audio:true});
 
     peer = new RTCPeerConnection({
-        iceServers:[
-            {
-                urls:"stun:stun.l.google.com:19302"
-            }
-        ]
+        iceServers:[{urls:"stun:stun.l.google.com:19302"}]
     });
 
-    stream.getTracks().forEach(track=>{
-        peer.addTrack(track, stream);
-    });
+    stream.getTracks().forEach(t=>peer.addTrack(t,stream));
 
-    peer.ontrack=(event)=>{
+    peer.ontrack=(e)=>{
 
-        const audio = new Audio();
-
-        audio.srcObject = event.streams[0];
-
+        const audio=new Audio();
+        audio.srcObject=e.streams[0];
         audio.play();
     };
 
-    peer.onicecandidate=(event)=>{
-
-        if(event.candidate){
-
-            socket.emit("signal",{
-                type:"candidate",
-                candidate:event.candidate
-            });
+    peer.onicecandidate=(e)=>{
+        if(e.candidate){
+            socket.emit("signal",{type:"candidate",candidate:e.candidate});
         }
     };
 
-    const offer =
-    await peer.createOffer();
-
+    const offer=await peer.createOffer();
     await peer.setLocalDescription(offer);
 
-    socket.emit("signal",{
-        type:"offer",
-        offer
-    });
+    socket.emit("signal",{type:"offer",offer});
 }
 
-// 📡 SIGNAL
-socket.on("signal", async (data)=>{
+function stopVoice(){
 
-    if(data.data.type==="offer"){
+    if(stream){
+        stream.getTracks().forEach(t=>t.stop());
+    }
 
-        peer = new RTCPeerConnection({
-            iceServers:[
-                {
-                    urls:"stun:stun.l.google.com:19302"
-                }
-            ]
+    if(peer){
+        peer.close();
+    }
+}
+
+// signal
+socket.on("signal",async (data)=>{
+
+    if(data.type==="offer"){
+
+        peer=new RTCPeerConnection({
+            iceServers:[{urls:"stun:stun.l.google.com:19302"}]
         });
 
-        stream =
-        await navigator.mediaDevices
-        .getUserMedia({audio:true});
+        stream=await navigator.mediaDevices.getUserMedia({audio:true});
 
-        stream.getTracks().forEach(track=>{
-            peer.addTrack(track, stream);
-        });
+        stream.getTracks().forEach(t=>peer.addTrack(t,stream));
 
-        peer.ontrack=(event)=>{
-
-            const audio = new Audio();
-
-            audio.srcObject =
-            event.streams[0];
-
+        peer.ontrack=(e)=>{
+            const audio=new Audio();
+            audio.srcObject=e.streams[0];
             audio.play();
         };
 
-        peer.onicecandidate=(event)=>{
+        await peer.setRemoteDescription(data.offer);
 
-            if(event.candidate){
+        const ans=await peer.createAnswer();
+        await peer.setLocalDescription(ans);
 
-                socket.emit("signal",{
-                    type:"candidate",
-                    candidate:event.candidate
-                });
-            }
-        };
-
-        await peer.setRemoteDescription(
-            data.data.offer
-        );
-
-        const answer =
-        await peer.createAnswer();
-
-        await peer.setLocalDescription(
-            answer
-        );
-
-        socket.emit("signal",{
-            type:"answer",
-            answer
-        });
+        socket.emit("signal",{type:"answer",answer:ans});
     }
 
-    if(data.data.type==="answer"){
-
-        await peer.setRemoteDescription(
-            data.data.answer
-        );
+    if(data.type==="answer"){
+        await peer.setRemoteDescription(data.answer);
     }
 
-    if(data.data.type==="candidate"){
-
-        await peer.addIceCandidate(
-            data.data.candidate
-        );
+    if(data.type==="candidate"){
+        await peer.addIceCandidate(data.candidate);
     }
 });
 
