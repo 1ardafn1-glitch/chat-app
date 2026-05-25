@@ -2,25 +2,62 @@
 <html>
 <body>
 
-<h2>Chat</h2>
+<h2>Chat App</h2>
 
-<input id="msg">
-<button onclick="send()">Gönder</button>
+<!-- 👤 İSİM GİRİŞ -->
+<div id="login">
+    <input id="name" placeholder="İsmini yaz">
+    <button onclick="join()">Giriş</button>
+</div>
 
-<div id="chat"></div>
+<!-- 💬 CHAT -->
+<div id="chatBox" style="display:none;">
+    <input id="msg" placeholder="Mesaj yaz">
+    <button onclick="send()">Gönder</button>
+
+    <div id="chat"></div>
+</div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
 const socket = io();
+let userName = "";
 
-function send(){
-    const msg = document.getElementById("msg").value;
-    socket.emit("message", msg);
-    document.getElementById("msg").value="";
+// 👤 isim zorunlu giriş
+function join(){
+    const nameInput = document.getElementById("name").value;
+
+    if(nameInput.trim() === ""){
+        alert("İsim yazmak zorunlu!");
+        return;
+    }
+
+    userName = nameInput;
+
+    document.getElementById("login").style.display = "none";
+    document.getElementById("chatBox").style.display = "block";
 }
 
-socket.on("message",(msg)=>{
-    document.getElementById("chat").innerHTML += "<p>"+msg+"</p>";
+// 💬 mesaj gönderme
+function send(){
+    const input = document.getElementById("msg");
+    const msg = input.value;
+
+    if(msg.trim() === "") return;
+
+    socket.emit("message", {
+        name: userName,
+        msg: msg
+    });
+
+    input.value = "";   // ✅ mesaj silinir
+    input.focus();      // ✅ tekrar yazmaya hazır olur
+}
+
+// 💬 mesaj alma
+socket.on("message",(data)=>{
+    document.getElementById("chat").innerHTML +=
+        "<p><b>" + data.name + ":</b> " + data.msg + "</p>";
 });
 </script>
 
