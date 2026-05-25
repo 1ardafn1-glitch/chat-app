@@ -1,249 +1,580 @@
+<!-- public/index.html -->
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>Chat App</title>
+<title>Discord Clone</title>
 
 <style>
-body{
+
+*{
     margin:0;
-    font-family:Arial;
-    background:#0f172a;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
+    padding:0;
+    box-sizing:border-box;
 }
 
-#app{
-    width:420px;
-    height:650px;
-    background:#111827;
-    border-radius:15px;
-    display:flex;
-    flex-direction:column;
+body{
+    background:#313338;
+    font-family:Arial;
     overflow:hidden;
 }
 
-header{
-    background:#1f2937;
+/* APP */
+#app{
+    display:flex;
+    width:100vw;
+    height:100vh;
+}
+
+/* SOL SERVER BAR */
+#servers{
+    width:72px;
+    background:#1e1f22;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding-top:10px;
+}
+
+.serverIcon{
+    width:50px;
+    height:50px;
+    background:#5865f2;
+    border-radius:50%;
+    margin-bottom:10px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
     color:white;
+    font-size:22px;
+}
+
+/* KANAL */
+#channels{
+    width:260px;
+    background:#2b2d31;
+    color:white;
+    padding:15px;
+}
+
+#channels h2{
+    margin-bottom:20px;
+}
+
+.menuBtn{
+    width:100%;
     padding:12px;
-    text-align:center;
+    margin-top:10px;
+    border:none;
+    border-radius:8px;
+    background:#404249;
+    color:white;
+    text-align:left;
+    cursor:pointer;
+}
+
+.menuBtn:hover{
+    background:#4e5058;
+}
+
+input{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    border:none;
+    border-radius:8px;
+    background:#1e1f22;
+    color:white;
+}
+
+/* CHAT */
+#chatArea{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    background:#313338;
+}
+
+#topbar{
+    height:50px;
+    background:#313338;
+    border-bottom:1px solid #1e1f22;
+    display:flex;
+    align-items:center;
+    padding-left:20px;
+    color:white;
     font-weight:bold;
 }
 
 #chat{
     flex:1;
-    padding:10px;
     overflow-y:auto;
-    color:white;
+    padding:20px;
 }
 
 .msg{
-    background:#2563eb;
-    padding:8px;
-    margin:5px 0;
-    border-radius:10px;
-    width:fit-content;
-    max-width:80%;
+    color:white;
+    margin-bottom:15px;
 }
 
-#typing{
-    font-size:12px;
+.msg b{
+    color:#5865f2;
+}
+
+.system{
     color:gray;
-    padding:5px;
+    font-size:14px;
+    margin-bottom:10px;
 }
 
+/* TYPING */
+#typing{
+    color:gray;
+    font-size:12px;
+    padding-left:20px;
+    padding-bottom:5px;
+}
+
+/* INPUT */
 #inputBox{
     display:flex;
-    padding:10px;
-    background:#1f2937;
-}
-
-input{
-    flex:1;
-    padding:8px;
-    border:none;
-    border-radius:8px;
-}
-
-button{
-    margin-left:5px;
-    padding:8px 10px;
-    border:none;
-    border-radius:8px;
-    background:#22c55e;
-    color:white;
-}
-
-#login{
     padding:20px;
+}
+
+#msg{
+    flex:1;
+    background:#383a40;
+}
+
+#sendBtn,
+#voiceBtn{
+    width:55px;
+    margin-left:10px;
+    border:none;
+    border-radius:10px;
+    background:#5865f2;
+    color:white;
+    cursor:pointer;
+}
+
+/* LOGIN */
+#loginScreen{
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:#1e1f22;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+#loginBox{
+    width:350px;
+    background:#313338;
+    padding:30px;
+    border-radius:15px;
     color:white;
 }
+
+.bigBtn{
+    width:100%;
+    padding:14px;
+    margin-top:10px;
+    border:none;
+    border-radius:10px;
+    background:#5865f2;
+    color:white;
+    cursor:pointer;
+}
+
 </style>
 </head>
 
 <body>
 
-<div id="app">
+<div id="loginScreen">
 
-<header>🔥 Group Chat</header>
+<div id="loginBox">
 
-<div id="login">
-    <input id="name" placeholder="İsim"><br><br>
-    <input id="room" placeholder="Oda"><br><br>
-    <input id="pass" placeholder="Şifre"><br><br>
-    <button onclick="join()">Giriş</button>
+<h2>Discord Clone 🔥</h2>
+
+<input id="name" placeholder="İsim">
+
+<div id="mainMenu">
+
+<button class="bigBtn" onclick="joinGlobal()">
+🌍 Global Sohbet
+</button>
+
+<button class="bigBtn" onclick="showRoomMenu()">
+🔒 Odalı Sohbet
+</button>
+
 </div>
 
-<div id="chat" style="display:none;"></div>
+<div id="roomMenu" style="display:none;">
+
+<input id="roomName" placeholder="Oda Adı">
+
+<input id="roomPass" placeholder="Şifre">
+
+<button class="bigBtn" onclick="createRoom()">
+➕ Oda Kur
+</button>
+
+<button class="bigBtn" onclick="joinRoom()">
+🚪 Odaya Katıl
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- APP -->
+<div id="app">
+
+<!-- SERVER BAR -->
+<div id="servers">
+
+<div class="serverIcon">💬</div>
+
+</div>
+
+<!-- CHANNELS -->
+<div id="channels">
+
+<h2>CHAT</h2>
+
+<button class="menuBtn">
+# genel
+</button>
+
+<button class="menuBtn">
+🔊 voice
+</button>
+
+</div>
+
+<!-- CHAT -->
+<div id="chatArea">
+
+<div id="topbar">
+# sohbet
+</div>
+
+<div id="chat"></div>
+
 <div id="typing"></div>
 
-<div id="inputBox" style="display:none;">
-    <input id="msg" placeholder="Mesaj...">
-    <button onclick="send()">➤</button>
-    <button onclick="startVoice()">🎤</button>
+<div id="inputBox">
+
+<input id="msg" placeholder="Mesaj yaz...">
+
+<button id="sendBtn" onclick="send()">
+➤
+</button>
+
+<button id="voiceBtn"
+onclick="startVoice()"
+style="display:none;">
+🎤
+</button>
+
+</div>
+
 </div>
 
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
+
 <script>
+
 const socket = io();
 
-let user="";
+let user = "";
 let peer;
 let stream;
 
-// 🚪 giriş
-function join(){
-    socket.emit("joinRoom",{
-        name:document.getElementById("name").value,
-        room:document.getElementById("room").value,
-        password:document.getElementById("pass").value
-    });
+// 🌍 GLOBAL
+function joinGlobal(){
+
+    user = document.getElementById("name").value;
+
+    if(user.trim()==""){
+        alert("İsim gerekli");
+        return;
+    }
+
+    socket.emit("joinGlobal", user);
+
+    document.getElementById("loginScreen")
+    .style.display="none";
 }
 
-// ❌ hata
-socket.on("errorMessage", m=>{
-    alert(m);
-});
+// 🔒 ROOM MENU
+function showRoomMenu(){
 
-// ✅ giriş başarılı
-socket.on("system", m=>{
-    document.getElementById("login").style.display="none";
-    document.getElementById("chat").style.display="block";
-    document.getElementById("inputBox").style.display="flex";
-    addMsg("SYSTEM", m);
-});
+    document.getElementById("mainMenu")
+    .style.display="none";
 
-// 💬 mesaj
+    document.getElementById("roomMenu")
+    .style.display="block";
+}
+
+// ➕ CREATE ROOM
+function createRoom(){
+
+    user = document.getElementById("name").value;
+
+    const room =
+    document.getElementById("roomName").value;
+
+    const pass =
+    document.getElementById("roomPass").value;
+
+    socket.emit("createRoom",{
+        name:user,
+        room,
+        password:pass
+    });
+
+    document.getElementById("loginScreen")
+    .style.display="none";
+
+    document.getElementById("voiceBtn")
+    .style.display="block";
+}
+
+// 🚪 JOIN ROOM
+function joinRoom(){
+
+    user = document.getElementById("name").value;
+
+    const room =
+    document.getElementById("roomName").value;
+
+    const pass =
+    document.getElementById("roomPass").value;
+
+    socket.emit("joinRoom",{
+        name:user,
+        room,
+        password:pass
+    });
+
+    document.getElementById("loginScreen")
+    .style.display="none";
+
+    document.getElementById("voiceBtn")
+    .style.display="block";
+}
+
+// 💬 SEND
 function send(){
-    const input=document.getElementById("msg");
+
+    const input =
+    document.getElementById("msg");
+
     if(input.value.trim()=="") return;
 
     socket.emit("message", input.value);
+
     input.value="";
 }
 
-socket.on("message", d=>{
-    addMsg(d.name,d.msg);
+// ⌨️ ENTER
+document.getElementById("msg")
+.addEventListener("keypress",(e)=>{
+
+    if(e.key==="Enter"){
+        send();
+    }
 });
 
-// ✍️ typing
-document.getElementById("msg").addEventListener("input",()=>{
+// ✍️ TYPING
+document.getElementById("msg")
+.addEventListener("input",()=>{
+
     socket.emit("typing");
 });
 
-socket.on("typing",name=>{
-    document.getElementById("typing").innerText=name+" yazıyor...";
-    setTimeout(()=>document.getElementById("typing").innerText="",1000);
-});
+// 💬 MESSAGE
+socket.on("message",(data)=>{
 
-// 📩 mesaj ekle
-function addMsg(n,m){
-    const div=document.createElement("div");
+    const div =
+    document.createElement("div");
+
     div.className="msg";
-    div.innerHTML=`<b>${n}:</b> ${m}`;
-    document.getElementById("chat").appendChild(div);
-    document.getElementById("chat").scrollTop=999999;
-}
 
-// ⌨️ ENTER
-document.getElementById("msg").addEventListener("keypress",e=>{
-    if(e.key==="Enter") send();
+    div.innerHTML=
+    `<b>${data.name}</b>: ${data.msg}`;
+
+    document.getElementById("chat")
+    .appendChild(div);
+
+    document.getElementById("chat")
+    .scrollTop=999999;
 });
 
-// 🎤 VOICE (BASİT LIVE)
+// ℹ️ SYSTEM
+socket.on("system",(d)=>{
+
+    const div =
+    document.createElement("div");
+
+    div.className="system";
+
+    div.innerText=d.text;
+
+    document.getElementById("chat")
+    .appendChild(div);
+});
+
+// ✍️ typing
+socket.on("typing",(name)=>{
+
+    document.getElementById("typing")
+    .innerText=name+" yazıyor...";
+
+    setTimeout(()=>{
+        document.getElementById("typing")
+        .innerText="";
+    },1000);
+});
+
+// ❌ error
+socket.on("errorMessage",(m)=>{
+    alert(m);
+});
+
+// 🎤 VOICE CHAT
 async function startVoice(){
 
-    stream = await navigator.mediaDevices.getUserMedia({audio:true});
+    stream =
+    await navigator.mediaDevices
+    .getUserMedia({audio:true});
 
     peer = new RTCPeerConnection({
-        iceServers:[{urls:"stun:stun.l.google.com:19302"}]
+        iceServers:[
+            {
+                urls:"stun:stun.l.google.com:19302"
+            }
+        ]
     });
 
-    stream.getTracks().forEach(t=>peer.addTrack(t,stream));
+    stream.getTracks().forEach(track=>{
+        peer.addTrack(track, stream);
+    });
 
-    peer.ontrack=(e)=>{
-        const audio=new Audio();
-        audio.srcObject=e.streams[0];
+    peer.ontrack=(event)=>{
+
+        const audio = new Audio();
+
+        audio.srcObject = event.streams[0];
+
         audio.play();
     };
 
-    peer.onicecandidate=(e)=>{
-        if(e.candidate){
-            socket.emit("signal",{type:"candidate",candidate:e.candidate});
+    peer.onicecandidate=(event)=>{
+
+        if(event.candidate){
+
+            socket.emit("signal",{
+                type:"candidate",
+                candidate:event.candidate
+            });
         }
     };
 
-    const offer=await peer.createOffer();
+    const offer =
+    await peer.createOffer();
+
     await peer.setLocalDescription(offer);
 
-    socket.emit("signal",{type:"offer",offer});
+    socket.emit("signal",{
+        type:"offer",
+        offer
+    });
 }
 
-// 🎧 SIGNAL
-socket.on("signal",async data=>{
+// 📡 SIGNAL
+socket.on("signal", async (data)=>{
 
     if(data.data.type==="offer"){
 
-        peer=new RTCPeerConnection({
-            iceServers:[{urls:"stun:stun.l.google.com:19302"}]
+        peer = new RTCPeerConnection({
+            iceServers:[
+                {
+                    urls:"stun:stun.l.google.com:19302"
+                }
+            ]
         });
 
-        stream=await navigator.mediaDevices.getUserMedia({audio:true});
-        stream.getTracks().forEach(t=>peer.addTrack(t,stream));
+        stream =
+        await navigator.mediaDevices
+        .getUserMedia({audio:true});
 
-        peer.ontrack=(e)=>{
-            const audio=new Audio();
-            audio.srcObject=e.streams[0];
+        stream.getTracks().forEach(track=>{
+            peer.addTrack(track, stream);
+        });
+
+        peer.ontrack=(event)=>{
+
+            const audio = new Audio();
+
+            audio.srcObject =
+            event.streams[0];
+
             audio.play();
         };
 
-        peer.onicecandidate=(e)=>{
-            if(e.candidate){
-                socket.emit("signal",{type:"candidate",candidate:e.candidate});
+        peer.onicecandidate=(event)=>{
+
+            if(event.candidate){
+
+                socket.emit("signal",{
+                    type:"candidate",
+                    candidate:event.candidate
+                });
             }
         };
 
-        await peer.setRemoteDescription(data.data.offer);
+        await peer.setRemoteDescription(
+            data.data.offer
+        );
 
-        const answer=await peer.createAnswer();
-        await peer.setLocalDescription(answer);
+        const answer =
+        await peer.createAnswer();
 
-        socket.emit("signal",{type:"answer",answer});
+        await peer.setLocalDescription(
+            answer
+        );
+
+        socket.emit("signal",{
+            type:"answer",
+            answer
+        });
     }
 
     if(data.data.type==="answer"){
-        await peer.setRemoteDescription(data.data.answer);
+
+        await peer.setRemoteDescription(
+            data.data.answer
+        );
     }
 
     if(data.data.type==="candidate"){
-        await peer.addIceCandidate(data.data.candidate);
+
+        await peer.addIceCandidate(
+            data.data.candidate
+        );
     }
 });
+
 </script>
 
 </body>
